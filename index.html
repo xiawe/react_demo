@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="../a.ico">
+    <script src="build/react.development.js"></script>
+    <script src="build/react-dom.development.js"></script>
+    <script src="build/babel.min.js"></script>
+    <style>
+      .finished{
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="example"></div>
+    <script type="text/babel">
+      const log = console.log.bind(console)
+
+      class TodoApp extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+            text: '',
+            items: [
+              {
+                content: 'cc',
+                addTime: '10:00',
+                isDone: false,
+              }
+            ],
+            doneNum: 0,
+          }
+        }
+
+        handleChange = (event) => {
+          this.setState({
+            text: event.target.value,
+          })
+        }
+
+        handleAdd = () => {
+          let t = {}
+          t.content = this.state.text
+          t.addTime = new Date().toLocaleTimeString()
+          this.setState((prevState) => ({
+            items: [...prevState.items, t],
+            text: ''
+          }))
+          log('add', this.state)
+        }
+
+        handelDelete = (deleteId) => {
+          this.setState((prevState) => {
+            return {items: prevState.items.filter((item, index) => index != deleteId)}
+          })
+          log('delete', this.state)
+        }
+
+        toggleComplete = (toggleId) => {
+          let t = Object.assign(this.state.items[toggleId], {isDone: !this.state.items[toggleId].isDone})
+          if (this.state.items[toggleId].isDone) {
+            this.setState({
+              doneNum: this.state.doneNum + 1,
+            })
+          } else {
+            this.setState({
+              doneNum: this.state.doneNum - 1,
+            })
+          }
+          // 感觉此处的写法很野鸡，不知道怎么优化？
+          this.state.items.splice(toggleId, 1, t)
+          this.setState({
+            items: this.state.items,
+          })
+          log('Complete', this.state)
+
+        }
+
+        render() {
+          return (
+            <div className="todo-wrap">
+              <div>
+                <Count doneNum={this.state.doneNum}/>
+                <input name="todo" type="text" value={this.state.text} onChange={this.handleChange}/>
+                <input name="add" type="button" value="add" onClick={this.handleAdd}/>
+                <ul>
+                  {this.state.items.map((item, index) => 
+                    <TodoList 
+                      content={item.content} 
+                      key={index}
+                      isDone={item.isDone ? 'finished' : ''}
+                      handelDelete = {this.handelDelete.bind(this, index)}
+                      toggleComplete = {this.toggleComplete.bind(this, index)}/>
+                  )}
+                </ul>
+
+              </div>
+            </div>
+          )
+        }
+      }
+
+      class Count extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {}
+        }
+
+        render() {
+          return (
+            <h3>Complete: {this.props.doneNum}</h3>
+          )
+        }
+      }
+
+      class TodoList extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+          }
+        }
+
+        deleteTesk = () => {
+          this.props.handelDelete(this.props.todo)
+        }
+
+        render() {
+          return (
+            <li>
+              <button onClick={this.props.toggleComplete}>complete</button>
+              <span className={this.props.isDone}>{this.props.content}</span>
+              <button onClick={this.props.handelDelete}>del</button>
+            </li>
+          )
+        }
+      }
+
+      ReactDOM.render(
+          <TodoApp />,
+          document.getElementById('example')
+      )
+    </script>
+  </body>
+</html>
