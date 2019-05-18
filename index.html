@@ -47,14 +47,14 @@
             items: [...prevState.items, t],
             text: ''
           }))
-          log('add', this.state)
+          // log('add', this.state)
         }
 
         handelDelete = (deleteId) => {
           this.setState((prevState) => {
             return {items: prevState.items.filter((item, index) => index != deleteId)}
           })
-          log('delete', this.state)
+          // log('delete', this.state)
         }
 
         toggleComplete = (toggleId) => {
@@ -73,8 +73,7 @@
           this.setState({
             items: this.state.items,
           })
-          log('Complete', this.state)
-
+          // log('Complete', this.state)
         }
 
         render() {
@@ -102,11 +101,6 @@
       }
 
       class Count extends React.Component {
-        constructor(props) {
-          super(props)
-          this.state = {}
-        }
-
         render() {
           return (
             <h3>Complete: {this.props.doneNum}</h3>
@@ -115,16 +109,6 @@
       }
 
       class TodoList extends React.Component {
-        constructor(props) {
-          super(props)
-          this.state = {
-          }
-        }
-
-        deleteTesk = () => {
-          this.props.handelDelete(this.props.todo)
-        }
-
         render() {
           return (
             <li>
